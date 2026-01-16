@@ -1,8 +1,8 @@
-from graph.state import ImageAgentState
+from app.graph.state import ImageAgentState
 from langchain_core.output_parsers import PydanticOutputParser
 from pathlib import Path
-from tools.commands import ResizeCommand
-from tools.imagemagick import resize_image
+from app.tools.commands import ResizeCommand
+from app.tools.imagemagick import resize_image
 
 
 def plan_node(state: ImageAgentState, llm):
@@ -43,18 +43,24 @@ Plan:
     try:
         response = llm.invoke(prompt)
         command = parser.parse(response)
-
         return {"command": command.dict()}
     except Exception as e:
         return {"error": f"Command generation failed: {e}"}
 
 
 def execute_node(state):
+    state.command = {
+        "operation": "resize",
+        "input_path": "input.jpg",
+        "output_path": "output.jpg",
+        "width": 128,
+        "height": 128,
+    }
     try:
         cmd = state.command
 
-        input_path = Path(cmd["input_path"])
-        output_path = Path(cmd["output_path"])
+        input_path = Path(state.input_path)
+        output_path = Path("images/output") / f"out_{Path(state.input_path).name}"
 
         resize_image(
             input_path=input_path,

@@ -4,6 +4,7 @@ from typing import Optional
 
 class ImageAgentState(BaseModel):
     user_request: str
+    input_path: str
     plan: Optional[str] = None
     command: Optional[dict] = None
     result_path: Optional[str] = None

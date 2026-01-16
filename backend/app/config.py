@@ -8,7 +8,7 @@ load_dotenv()
 class Settings(BaseModel):
     google_api_key: str
     llm_provider: str = "gemini"
-    gemini_model: str = "gemini-2.5-flash"
+    gemini_model: str = "gemini-2.5-flash-lite"
 
 
 def load_settings() -> Settings:
