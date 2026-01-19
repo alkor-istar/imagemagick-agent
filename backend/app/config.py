@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from dotenv import load_dotenv
+from typing import List
 import os
 
 load_dotenv()
@@ -9,6 +10,15 @@ class Settings(BaseModel):
     google_api_key: str
     llm_provider: str = "gemini"
     gemini_model: str = "gemini-2.5-flash-lite"
+
+    cors_origins: List[str] = [
+        "http://localhost:5173",
+        "http://[::1]:5173",
+        "http://127.0.0.1:5173",
+    ]
+
+    class Config:
+        env_file = ".env"
 
 
 def load_settings() -> Settings:
