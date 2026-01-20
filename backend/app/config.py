@@ -11,11 +11,7 @@ class Settings(BaseModel):
     llm_provider: str = "gemini"
     gemini_model: str = "gemini-2.5-flash-lite"
 
-    cors_origins: List[str] = [
-        "http://localhost:5173",
-        "http://[::1]:5173",
-        "http://127.0.0.1:5173",
-    ]
+    cors_origins: List[str] = []
 
     class Config:
         env_file = ".env"
