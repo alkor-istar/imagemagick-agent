@@ -49,13 +49,6 @@ Plan:
 
 
 def execute_node(state):
-    state.command = {
-        "operation": "resize",
-        "input_path": "input.jpg",
-        "output_path": "output.jpg",
-        "width": 128,
-        "height": 128,
-    }
     try:
         cmd = state.command
 
