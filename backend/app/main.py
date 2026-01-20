@@ -17,8 +17,6 @@ def create_app() -> FastAPI:
         allow_methods=["POST", "GET", "OPTIONS"],
         allow_headers=["*"],
     )
-    print("settings.cors_origins", settings.cors_origins)
-    print("RAW ENV CORS_ORIGINS =", os.getenv("CORS_ORIGINS"))
 
     app.state.agent = build_imagick_agent(settings)
 
