@@ -3,6 +3,6 @@ langchain_core==1.2.7
 langchain_google_genai==4.2.0
 langgraph==1.0.6
 pydantic==2.12.5
-python-dotenv==1.2.1
-uvicorn[standard]
+pydantic_settings==2.12.0
 python-multipart
+uvicorn
