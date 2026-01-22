@@ -1,11 +1,28 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
+
+
+class ImageMetadata(BaseModel):
+    width: int
+    height: int
+    format: str
+    mode: Optional[str] = None
+
+
+class PlanStep(BaseModel):
+    operation: str
+    reason: str
 
 
 class ImageAgentState(BaseModel):
+    image_metadata: ImageMetadata
     user_request: str
     input_path: str
-    plan: Optional[str] = None
+
+    plan: Optional[List[PlanStep]] = None
+    current_step_index: int = 0
+
     command: Optional[dict] = None
-    result_path: Optional[str] = None
+    current_output_path: Optional[str] = None
+
     error: Optional[str] = None

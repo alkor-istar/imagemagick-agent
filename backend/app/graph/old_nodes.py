@@ -5,18 +5,6 @@ from app.tools.commands import ResizeCommand
 from app.tools.imagemagick import resize_image
 
 
-def plan_node(state: ImageAgentState, llm):
-    prompt = f"""
-You are an image editing planner.
-User request:
-{state.user_request}
-
-How can I edit this image with ImageMagick.
-"""
-    plan = llm.invoke(prompt)
-    return {"plan": plan}
-
-
 def command_node(state, llm):
     parser = PydanticOutputParser(pydantic_object=ResizeCommand)
 
