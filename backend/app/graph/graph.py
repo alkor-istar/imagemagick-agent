@@ -1,8 +1,22 @@
 from langgraph.graph import StateGraph, END
 from .state import ImageAgentState
 from .planner import planner_node
+from .command import command_node
+from .executor import executor_node
 from .debug import debug_node
 from .iterator import advance_state_node, has_more_steps
+
+
+def route_after_planner(state: ImageAgentState) -> str:
+    if not state.plan or len(state.plan) == 0:
+        return "done"
+    return "command"
+
+
+def route_after_advance(state: ImageAgentState) -> str:
+    if has_more_steps(state):
+        return "command"
+    return "done"
 
 
 def build_graph(llm):

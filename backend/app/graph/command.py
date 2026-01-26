@@ -4,7 +4,8 @@ from langchain_core.output_parsers import PydanticOutputParser
 
 from app.tools.commands import COMMAND_REGISTRY
 from app.prompts.command import COMMAND_SYSTEM_PROMPT
-from app.state import ImageAgentState, PlanStep
+from app.graph.state import ImageAgentState, PlanStep
+from pydantic import BaseModel
 
 
 def build_command_prompt(
@@ -32,7 +33,7 @@ Command schema:
 
 
 def command_node(
-    state: AgentState,
+    state: ImageAgentState,
     llm,
 ) -> BaseModel:
     step = state.plan[state.current_step_index]
