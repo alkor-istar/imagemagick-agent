@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional, List
+from app.tools.commands import ImageCommand
 
 
 class ImageMetadata(BaseModel):
@@ -17,12 +18,12 @@ class PlanStep(BaseModel):
 class ImageAgentState(BaseModel):
     image_metadata: ImageMetadata
     user_request: str
-    input_path: str
+    current_input_path: str
 
     plan: Optional[List[PlanStep]] = None
     current_step_index: int = 0
 
-    command: Optional[dict] = None
+    current_command: Optional[ImageCommand] = None
     current_output_path: Optional[str] = None
 
     error: Optional[str] = None

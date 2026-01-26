@@ -6,12 +6,12 @@ from app.tools.commands import COMMAND_REGISTRY
 from app.prompts.command import COMMAND_SYSTEM_PROMPT
 from app.graph.state import ImageAgentState, PlanStep
 from pydantic import BaseModel
+from pathlib import Path
 
 
 def build_command_prompt(
     step: PlanStep,
     input_path: str,
-    output_path: str,
     schema: dict,
 ) -> str:
     return f"""
@@ -24,9 +24,6 @@ Operation:
 Input image:
 {input_path}
 
-Output image:
-{output_path}
-
 Command schema:
 {json.dumps(schema, indent=2)}
 """.strip()
@@ -35,7 +32,8 @@ Command schema:
 def command_node(
     state: ImageAgentState,
     llm,
-) -> BaseModel:
+) -> ImageAgentState:
+    print("command node")
     step = state.plan[state.current_step_index]
     if step.operation not in COMMAND_REGISTRY:
         raise ValueError(f"Unsupported operation: {step.operation}")
@@ -44,7 +42,6 @@ def command_node(
     parser = PydanticOutputParser(pydantic_object=CommandModel)
 
     input_path = state.current_input_path
-    output_path = state.next_output_path()
 
     messages = [
         SystemMessage(content=COMMAND_SYSTEM_PROMPT),
@@ -52,17 +49,18 @@ def command_node(
             content=build_command_prompt(
                 step=step,
                 input_path=input_path,
-                output_path=output_path,
                 schema=CommandModel.model_json_schema(),
             )
         ),
     ]
 
     response = llm.invoke(messages)
+    print("Response", response)
 
     try:
-        command = parser.parse(response.content)
+        command = parser.parse(response)
+        print("Command:", command)
+        state.current_command = command
+        return state
     except Exception as e:
         raise ValueError(f"Invalid command generated: {e}")
-
-    return command

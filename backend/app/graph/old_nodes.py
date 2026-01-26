@@ -40,8 +40,10 @@ def execute_node(state):
     try:
         cmd = state.command
 
-        input_path = Path(state.input_path)
-        output_path = Path("images/output") / f"out_{Path(state.input_path).name}"
+        input_path = Path(state.current_input_path)
+        output_path = (
+            Path("images/output") / f"out_{Path(state.current_input_path).name}"
+        )
 
         resize_image(
             input_path=input_path,

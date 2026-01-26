@@ -24,6 +24,7 @@ Available operations:
 - convert
 - quality
 - grayscale
+- brightness_contrast
 - blur
 - text_overlay
 - strip

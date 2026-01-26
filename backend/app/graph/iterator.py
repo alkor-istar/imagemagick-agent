@@ -11,8 +11,9 @@ def get_current_step(state: ImageAgentState) -> PlanStep:
 
 def advance_state_node(state: ImageAgentState) -> ImageAgentState:
     state.current_step_index += 1
+    print("Advancing state")
 
-    if state.current_output_path:
+    if state.current_output_path and state.current_step_index < len(state.plan):
         state.current_input_path = state.current_output_path
         state.current_output_path = None
 

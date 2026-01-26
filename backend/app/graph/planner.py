@@ -25,6 +25,7 @@ Image metadata:
 
 
 def planner_node(state: ImageAgentState, llm) -> ImageAgentState:
+    print("planner node")
     parser = PydanticOutputParser(pydantic_object=PlanOutput)
 
     messages = [
@@ -33,10 +34,8 @@ def planner_node(state: ImageAgentState, llm) -> ImageAgentState:
     ]
 
     response = llm.invoke(messages)
-    print("Response:", response)
-    plan = parser.parse(response)
 
-    print("Plan:", plan)
+    plan = parser.parse(response)
 
     state.plan = plan.steps
     return state
