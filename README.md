@@ -8,6 +8,7 @@ ImageMagick is a free, open-source software suite, used for editing and manipula
 Check their webpage here https://imagemagick.org/ or give it a try in any linux distro. 
 
 It looks like this:
+
 https://github.com/alkor-istar/imagemagick-agent/releases/download/untagged-ea653583244bacd27188/Screencast.mp4
 
 Live app:  
