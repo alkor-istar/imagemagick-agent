@@ -10,7 +10,7 @@ Check their webpage here https://imagemagick.org/ or give it a try in any linux 
 It looks like this:
 
 
-![Demo](https://github.com/alkor-istar/imagemagick-agent/releases/download/untagged-4a606a12036d0b66505e/screencast.gif)
+![Demo](https://github.com/alkor-istar/imagemagick-agent/releases/download/untagged-d7b1daa9cfacc2281a91/screencast.gif)
 
 
 Live app:  
