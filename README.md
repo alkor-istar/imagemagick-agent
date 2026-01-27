@@ -9,7 +9,9 @@ Check their webpage here https://imagemagick.org/ or give it a try in any linux 
 
 It looks like this:
 
-https://github.com/alkor-istar/imagemagick-agent/releases/download/untagged-ea653583244bacd27188/Screencast.mp4
+
+![Demo](https://github.com/alkor-istar/imagemagick-agent/releases/download/untagged-4a606a12036d0b66505e/screencast.gif)
+
 
 Live app:  
 https://imagemagick-agent.vercel.app/
