@@ -2,7 +2,7 @@ from fastapi import APIRouter, UploadFile, Form, Request
 from fastapi.responses import FileResponse
 from pathlib import Path
 import uuid
-from utils.image_utils import extract_metadata
+from app.utils.image_utils import extract_metadata
 
 router = APIRouter()
 

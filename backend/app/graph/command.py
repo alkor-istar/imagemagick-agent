@@ -7,7 +7,7 @@ from app.prompts.command import COMMAND_SYSTEM_PROMPT
 from app.graph.state import ImageAgentState, PlanStep
 from pydantic import BaseModel
 from pathlib import Path
-from utils.image_utils import extract_metadata
+from app.utils.image_utils import extract_metadata
 
 
 def build_command_prompt(
