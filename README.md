@@ -7,6 +7,9 @@ and an LLM-powered agent plans and executes the correct ImageMagick commands for
 ImageMagick is a free, open-source software suite, used for editing and manipulating digital images. 
 Check their webpage here https://imagemagick.org/ or give it a try in any linux distro. 
 
+It looks like this:
+https://github.com/alkor-istar/imagemagick-agent/releases/download/untagged-ea653583244bacd27188/Screencast.mp4
+
 Live app:  
 https://imagemagick-agent.vercel.app/
 The backend on this deployment is not always online, please send me a message if you want to have try.
