@@ -7,12 +7,11 @@ from app.prompts.command import COMMAND_SYSTEM_PROMPT
 from app.graph.state import ImageAgentState, PlanStep
 from pydantic import BaseModel
 from pathlib import Path
+from utils.image_utils import extract_metadata
 
 
 def build_command_prompt(
-    step: PlanStep,
-    input_path: str,
-    schema: dict,
+    step: PlanStep, input_path: str, schema: dict, image_metadata: dict
 ) -> str:
     return f"""
 Step to execute:
@@ -23,6 +22,9 @@ Operation:
 
 Input image:
 {input_path}
+
+Image metadata: 
+{image_metadata}
 
 Command schema:
 {json.dumps(schema, indent=2)}
@@ -42,6 +44,7 @@ def command_node(
     parser = PydanticOutputParser(pydantic_object=CommandModel)
 
     input_path = state.current_input_path
+    image_metadata = extract_metadata(Path(input_path))
 
     messages = [
         SystemMessage(content=COMMAND_SYSTEM_PROMPT),
@@ -50,6 +53,7 @@ def command_node(
                 step=step,
                 input_path=input_path,
                 schema=CommandModel.model_json_schema(),
+                image_metadata=image_metadata,
             )
         ),
     ]
