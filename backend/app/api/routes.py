@@ -2,6 +2,7 @@ from fastapi import APIRouter, UploadFile, Form, Request
 from fastapi.responses import FileResponse
 from pathlib import Path
 import uuid
+from utils.image_utils import extract_metadata
 
 router = APIRouter()
 
@@ -18,20 +19,30 @@ async def edit_image(request: Request, image: UploadFile, prompt: str = Form(...
     with input_path.open("wb") as f:
         f.write(await image.read())
 
+    # Get image metadata
+    image_metadata = extract_metadata(input_path)
     # Run agent
     agent = request.app.state.agent
-
+    print("Got image metadata", image_metadata)
+    print("Prompt:", prompt)
+    print("input path:", input_path)
     result = agent.invoke(
         {
             "user_request": prompt,
-            "input_path": str(input_path),
+            "current_input_path": str(input_path),
+            "image_metadata": image_metadata,
         }
     )
+
+    print("Result:", result)
+
+    # Delete input file
+    input_path.unlink()
 
     if result.get("error"):
         return {"error": result["error"]}
 
-    output_path = result["result_path"]
+    output_path = result["current_output_path"]
 
     return FileResponse(path=output_path, media_type="image/png", filename="result.png")
 

@@ -10,6 +10,7 @@ def create_app() -> FastAPI:
     settings = load_settings()
 
     app = FastAPI(title="ImageMagick LLM Agent", version="0.1.0")
+    print("CORS", settings.cors_origins)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,
