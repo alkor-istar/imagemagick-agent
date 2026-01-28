@@ -7,7 +7,7 @@ RUN apt-get update && \
     apt-get install -y \
         imagemagick \
         ca-certificates \
-        gs \ 
+        ghostscript \ 
     && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -m appuser
