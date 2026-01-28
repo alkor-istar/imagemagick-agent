@@ -36,7 +36,7 @@ The backend on this deployment is not always online, please send me a message if
 
 ## Todo
  - Frontend / backend authentication
- - More LLM backends.
+ - More LLM backends
  - Find which is the simplest and cheapest LLM I can get this running with
  - Better logging
  - Better user feedback
