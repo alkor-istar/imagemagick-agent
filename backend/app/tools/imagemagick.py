@@ -1,208 +1,149 @@
 import subprocess
 from pathlib import Path
-from typing import Callable, Dict, Type
+
+from app.tools.commands import (
+    blur_image,
+    brightness_contrast_image,
+    convert_image,
+    crop_image,
+    flip_image,
+    grayscale_image,
+    quality_image,
+    resize_image,
+    rotate_image,
+    text_overlay,
+)
 
 
-def resize_image(input_path: Path, output_path: Path, width: int, height: int):
-    cmd = [
-        "magick",
-        input_path,
-        "-resize",
-        f"{width}x{height}",
-        output_path,
-    ]
-
-    subprocess.run(cmd, check=True)
-
-
-def convert_image(input_path: Path, output_path: Path, format: str):
-    cmd = [
-        "magick",
-        input_path,
-        output_path,
-    ]
-
-    subprocess.run(cmd, check=True)
-
-
-def crop_image(
-    input_path: Path, output_path: Path, x: int, y: int, width: int, height: int
-):
-    cmd = [
-        "magick",
-        input_path,
-        "-crop",
-        f"{width}x{height}+{x}+{y}",
-        output_path,
-    ]
-
-    subprocess.run(cmd, check=True)
-
-
-def rotate_image(input_path: Path, output_path: Path, degrees: int):
-    cmd = [
-        "magick",
-        input_path,
-        "-rotate",
-        f"{degrees}",
-        output_path,
-    ]
-
-    subprocess.run(cmd, check=True)
-
-
-def flip_image(input_path: Path, output_path: Path, direction: str):
-    cmd = [
-        "magick",
-        input_path,
-        "-flip",
-        direction,
-        output_path,
-    ]
-
-    subprocess.run(cmd, check=True)
-
-
-def quality_image(input_path: Path, output_path: Path, quality: int):
-    cmd = [
-        "magick",
-        input_path,
-        "-quality",
-        f"{quality}",
-        output_path,
-    ]
-
-    subprocess.run(cmd, check=True)
-
-
-def grayscale_image(input_path: Path, output_path: Path):
-    print("In grayscale image: ", input_path, output_path)
-    cmd = [
-        "magick",
-        input_path,
-        "-colorspace",
-        "gray",
-        output_path,
-    ]
-
-    subprocess.run(cmd, check=True)
-
-
-def brightness_contrast_image(
-    input_path: Path, output_path: Path, brightness: int, contrast: int
-):
-    cmd = [
-        "magick",
-        input_path,
-        "-brightness-contrast",
-        f"{brightness}x{contrast}",
-        output_path,
-    ]
-
-    subprocess.run(cmd, check=True)
-
-
-def blur_image(input_path: Path, output_path: Path, radius: float):
-    cmd = [
-        "magick",
-        input_path,
-        "-blur",
-        f"{radius}",
-        output_path,
-    ]
-
-    subprocess.run(cmd, check=True)
-
-
-def text_overlay(
-    input_path: Path,
-    output_path: Path,
-    text: str,
-    x: int,
-    y: int,
-    font_size: int,
-    color: str,
-):
-    cmd = [
-        "magick",
-        input_path,
-        "-pointsize",
-        f"{font_size}",
-        "-fill",
-        f"{color}",
-        "-annotate",
-        f"+{x}+{y}",
-        f"{text}",
-        output_path,
-    ]
-
-    subprocess.run(cmd, check=True)
-
-
-COMMAND_EXECUTORS: Dict[str, Callable] = {
-    "resize": lambda c: resize_image(
+def _run_crop(c):
+    return crop_image(
         Path(c.input_path),
         Path(c.output_path),
-        c.width,
-        c.height,
-    ),
-    "convert": lambda c: convert_image(
+        width=c.width,
+        height=c.height,
+        x_offset=getattr(c, "x_offset", None),
+        y_offset=getattr(c, "y_offset", None),
+        gravity=getattr(c, "gravity", "center"),
+        repage=getattr(c, "repage", True),
+        strip_metadata=getattr(c, "strip_metadata", True),
+    )
+
+
+def _run_resize(c):
+    return resize_image(
         Path(c.input_path),
         Path(c.output_path),
-        c.format,
-    ),
-    "crop": lambda c: crop_image(
+        width=c.width,
+        height=c.height,
+        keep_aspect_ratio=getattr(c, "keep_aspect_ratio", True),
+        resize_mode=getattr(c, "resize_mode", None),
+        filter=getattr(c, "filter", None),
+        gravity=getattr(c, "gravity", "center"),
+        background=getattr(c, "background", None),
+        quality=getattr(c, "quality", None),
+        sharpen=getattr(c, "sharpen", None),
+        strip_metadata=getattr(c, "strip_metadata", True),
+    )
+
+
+def _run_convert(c):
+    return convert_image(
         Path(c.input_path),
         Path(c.output_path),
-        c.x,
-        c.y,
-        c.width,
-        c.height,
-    ),
-    "rotate": lambda c: rotate_image(
+        format=c.format,
+        quality=getattr(c, "quality", None),
+        strip_metadata=getattr(c, "strip_metadata", True),
+    )
+
+
+def _run_rotate(c):
+    return rotate_image(
         Path(c.input_path),
         Path(c.output_path),
-        c.degrees,
-    ),
-    "flip": lambda c: flip_image(
+        degrees=c.degrees,
+        background=getattr(c, "background", "white"),
+        strip_metadata=getattr(c, "strip_metadata", True),
+    )
+
+
+def _run_flip(c):
+    return flip_image(
         Path(c.input_path),
         Path(c.output_path),
-        c.direction,
-    ),
-    "quality": lambda c: quality_image(
+        direction=c.direction,
+        strip_metadata=getattr(c, "strip_metadata", True),
+    )
+
+
+def _run_quality(c):
+    return quality_image(
         Path(c.input_path),
         Path(c.output_path),
-        c.quality,
-    ),
-    "grayscale": lambda c: grayscale_image(
+        quality=c.quality,
+        strip_metadata=getattr(c, "strip_metadata", True),
+    )
+
+
+def _run_grayscale(c):
+    return grayscale_image(
         Path(c.input_path),
         Path(c.output_path),
-    ),
-    "brightness_contrast": lambda c: brightness_contrast_image(
+        method=getattr(c, "method", "rec709"),
+        strip_metadata=getattr(c, "strip_metadata", True),
+    )
+
+
+def _run_brightness_contrast(c):
+    return brightness_contrast_image(
         Path(c.input_path),
         Path(c.output_path),
-        c.brightness,
-        c.contrast,
-    ),
-    "blur": lambda c: blur_image(
+        brightness=c.brightness,
+        contrast=c.contrast,
+        strip_metadata=getattr(c, "strip_metadata", True),
+    )
+
+
+def _run_blur(c):
+    return blur_image(
         Path(c.input_path),
         Path(c.output_path),
-        c.radius,
-    ),
-    "text_overlay": lambda c: text_overlay(
+        radius=c.radius,
+        sigma=getattr(c, "sigma", None),
+        strip_metadata=getattr(c, "strip_metadata", True),
+    )
+
+
+def _run_text_overlay(c):
+    return text_overlay(
         Path(c.input_path),
         Path(c.output_path),
-        c.text,
-        c.x,
-        c.y,
-        c.font_size,
-        c.color,
-    ),
+        text=c.text,
+        x=c.x,
+        y=c.y,
+        font_size=getattr(c, "font_size", 24),
+        color=getattr(c, "color", "white"),
+        gravity=getattr(c, "gravity", None),
+        stroke_color=getattr(c, "stroke_color", None),
+        stroke_width=getattr(c, "stroke_width", None),
+        strip_metadata=getattr(c, "strip_metadata", True),
+    )
+
+
+COMMAND_EXECUTORS = {
+    "blur": _run_blur,
+    "brightness_contrast": _run_brightness_contrast,
+    "convert": _run_convert,
+    "crop": _run_crop,
+    "flip": _run_flip,
+    "grayscale": _run_grayscale,
+    "quality": _run_quality,
+    "resize": _run_resize,
+    "rotate": _run_rotate,
+    "text_overlay": _run_text_overlay,
 }
 
 
 def run_imagemagick(command):
-    print("Run imagemagick", command)
     operation = command.operation
 
     if operation not in COMMAND_EXECUTORS:
